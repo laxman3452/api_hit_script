@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Smartbike Resale Pinger</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background: #f4f4f4; }
+    button { margin: 10px; padding: 10px 20px; font-size: 16px; cursor: pointer; }
+    .results { margin-top: 20px; }
+    .result-box { border: 1px solid #ccc; padding: 10px; margin-top: 10px; height: 200px; overflow-y: auto; background: #fff; }
+    h1, h3 { margin-bottom: 5px; }
+  </style>
+</head>
+<body>
+  <h1>Smartbike Resale Pinger</h1>
+
+  <button id="startBtn">Start</button>
+  <button id="stopBtn">Stop</button>
+
+  <div class="results">
+    <h3>https://smartbike-resale.onrender.com</h3>
+    <div id="result1" class="result-box"></div>
+
+    <h3>https://smartbike-resale.onrender.com/</h3>
+    <div id="result2" class="result-box"></div>
+  </div>
+
+  <script>
+    let intervalId = null;
+
+    const url1 = "https://smartbike-resale.onrender.com";
+    const url2 = "https://smartbike-resale.onrender.com/";
+
+    const resultBox1 = document.getElementById("result1");
+    const resultBox2 = document.getElementById("result2");
+
+    function appendResult(box, data) {
+      const time = new Date().toLocaleTimeString();
+      box.innerHTML += `<div><strong>[${time}]</strong> ${data}</div>`;
+      box.scrollTop = box.scrollHeight;
+    }
+
+    function fetchURLs() {
+      fetch(url1)
+        .then(res => res.text())
+        .then(data => appendResult(resultBox1, `✅ Success: ${data.substring(0, 100)}...`))
+        .catch(err => appendResult(resultBox1, `❌ Error: ${err.message}`));
+
+      fetch(url2)
+        .then(res => res.text())
+        .then(data => appendResult(resultBox2, `✅ Success: ${data.substring(0, 100)}...`))
+        .catch(err => appendResult(resultBox2, `❌ Error: ${err.message}`));
+    }
+
+    document.getElementById("startBtn").addEventListener("click", () => {
+      if (!intervalId) {
+        fetchURLs(); // Call immediately
+        intervalId = setInterval(fetchURLs, 30000); // Repeat every 30s
+      }
+    });
+
+    document.getElementById("stopBtn").addEventListener("click", () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+        intervalId = null;
+      }
+    });
+  </script>
+</body>
+</html>
